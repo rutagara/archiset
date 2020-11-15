@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -14,8 +15,16 @@ import Header from '../src/header';
 import QuoteRequestDialog from '../src/quote-request-dialog';
 import TitlebarGridList from '../src/projects-grid-list';
 
+const useStyles = makeStyles({
+  root: {
+    width: '100%'
+  },
+});
+
 const Introduction = () => {
   const [open, setOpen] = React.useState(false);
+
+  const classes = useStyles();
 
   const openQuoteRequest = () => {
     setOpen(true);
@@ -31,7 +40,9 @@ const Introduction = () => {
         <Container>
           <Grid container spacing={10}>
             <Grid xs={12} md={6} item>
-              <img src="/undraw_interior_design_9i70.svg" height="400px"></img>
+              <Box p={4}>
+                <img src="/undraw_interior_design_9i70.svg" alt="interior-designer" className={classes.root}></img>
+              </Box>
             </Grid>
             <Grid xs={12} md={6} item>
               <Typography gutterBottom variant="h4">
