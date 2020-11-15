@@ -22,9 +22,6 @@ const theme = createMuiTheme({
     },
     success: {
       main: '#74AA80'
-    },
-    background: {
-      paper: '#EFE5DA'
     }
   }
 });
