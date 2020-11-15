@@ -101,12 +101,14 @@ function QuoteRequestDialog(props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values)
-    }).then((response) => {
+    }).then(response => {
       if (response.ok) {
         setSnackbarState('success');
       } else {
         setSnackbarState('error');
       }
+    }).catch(error => {
+      console.log("L'api n'a pas pu être appelée.")
     });
 
     onClose();
@@ -120,7 +122,7 @@ function QuoteRequestDialog(props) {
       <Snackbar open={snackbarState === 'error'} autoHidDuration={6000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="error">Votre message n'a pas pu être envoyé. Veuillez réessayer.</Alert>
       </Snackbar>
-      <Dialog open={open} aria-labelledby="quote-request-dialog-title">
+      <Dialog onClose={onClose} open={open} aria-labelledby="quote-request-dialog-title">
         <DialogTitle id="quote-request-dialog-title">Mon Projet</DialogTitle>
         <DialogContent>
           <form className={classes.root}>
