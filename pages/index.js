@@ -53,7 +53,7 @@ const Introduction = () => {
             <Grid xs={12} md={6} item>
               <Box p={7}>
                 <Typography gutterBottom component="h1" variant="h4">
-                  Trouvez l'architecte d'intérieur pour réaliser le projet de vos rêves.
+                  Trouvez l'architecte d'intérieur qui réalisera le projet de vos rêves.
                 </Typography>
                 <Box mb={3} color="text.secondary" >
                   <List>
