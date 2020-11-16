@@ -6,6 +6,8 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@sanity/client": "^2.0.9",
+    "@sanity/image-url": "^0.140.19",
     "@sendgrid/mail": "^7.4.0",
     "clsx": "latest",
     "material-ui-phone-number": "^2.2.6",

@@ -16,6 +16,8 @@ import Header from '../src/header';
 import QuoteRequestDialog from '../src/quote-request-dialog';
 import ProjectGridList from '../src/project-grid-list';
 
+import archisetSanityClient from '../src/sanity-client'
+
 const useStyles = makeStyles({
   w100: {
     width: '100%'
@@ -82,24 +84,29 @@ const Introduction = () => {
   );
 }
 
-const Partners = () => (
+const Projects = ({projects}) => (
   <Box component="section" bgcolor="background.light" py={7}>
     <Container>
       <Box mb={10}>
         <Typography component="h2" variant="h4" align="center">Les Réalisations de nos partenaires</Typography>
       </Box>
-      <ProjectGridList/>
+      <ProjectGridList projects={projects}/>
     </Container>
   </Box>
 );
 
-const Index = () => (
+const Index = (props) => (
   <>
     <Header/>
     <Introduction/>
-    <Partners/>
+    <Projects projects={props.projects}/>
     <Footer/>
   </>
 );
+
+export async function getServerSideProps() {
+  const projects = await archisetSanityClient.fetch('*[defined(description) && defined(images)]{description, images}[0...10]');
+  return { props: { projects: projects }};
+};
 
 export default Index;

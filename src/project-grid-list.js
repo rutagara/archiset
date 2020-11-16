@@ -10,6 +10,19 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
+import archisetSanityClient from './sanity-client'
+import imageUrlBuilder from '@sanity/image-url'
+
+// Get a pre-configured url-builder from your sanity client
+const builder = imageUrlBuilder(archisetSanityClient)
+
+// Then we like to make a simple function like this that gives the
+// builder an image and returns the builder for you to specify additional
+// parameters:
+function urlFor(source) {
+  return builder.image(source)
+}
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -34,6 +47,9 @@ const tileData = [{
 }];
 
 const ProjectGridList = (props) => {
+
+  console.log(props);
+
   const classes = useStyles();
 
   const getCols = () => {
@@ -51,14 +67,14 @@ const ProjectGridList = (props) => {
   return (
     <div className={classes.root}>
       <GridList cellHeight={300} cols={getCols()} spacing={24}>
-          {tileData.map((tile) => (
-              <GridListTile key={tile.img}>
-                <img src={tile.img} alt={tile.title}/>
+          {props.projects.map((project, index) => (
+              <GridListTile key={index}>
+                <img src={urlFor(project.images[0])} alt={project.description}/>
                 <GridListTileBar
-                  title={tile.title}
+                  title={project.description}
                   /*subtitle={<span>Budget: CHF {tile.budget.toLocaleString()}</span>}*/
                   actionIcon={
-                    <IconButton aria-label={`info about ${tile.title}`} className={classes.icon}>
+                    <IconButton aria-label={`Information sur ${project.description}`} className={classes.icon}>
                       <InfoIcon />
                     </IconButton>
                   }
