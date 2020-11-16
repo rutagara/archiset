@@ -72,12 +72,12 @@ const ProjectGridList = (props) => {
                 <img src={urlFor(project.images[0])} alt={project.description}/>
                 <GridListTileBar
                   title={project.description}
-                  /*subtitle={<span>Budget: CHF {tile.budget.toLocaleString()}</span>}*/
+                  /*subtitle={<span>Budget: CHF {tile.budget.toLocaleString()}</span>}
                   actionIcon={
                     <IconButton aria-label={`Information sur ${project.description}`} className={classes.icon}>
                       <InfoIcon />
                     </IconButton>
-                  }
+                  }*/
                 />
               </GridListTile>
           ))}
