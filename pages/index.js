@@ -8,17 +8,18 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography'
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 
 import Footer from '../src/footer';
 import Header from '../src/header';
 import QuoteRequestDialog from '../src/quote-request-dialog';
-import TitlebarGridList from '../src/projects-grid-list';
+import ProjectGridList from '../src/project-grid-list';
 
 const useStyles = makeStyles({
-  root: {
+  w100: {
     width: '100%'
-  },
+  }
 });
 
 const Introduction = () => {
@@ -36,19 +37,19 @@ const Introduction = () => {
 
   return (
     <>
-      <Box component="section" bgcolor="light.main" py={10}>
+      <Box component="section" bgcolor="background.light" py={7}>
         <Container>
           <Grid container spacing={10}>
             <Grid xs={12} md={6} item>
               <Box p={4}>
-                <img src="/undraw_interior_design_9i70.svg" alt="interior-designer" className={classes.root}></img>
+                <img src="/undraw_interior_design_9i70.svg" alt="interior-designer" className={classes.w100}></img>
               </Box>
             </Grid>
             <Grid xs={12} md={6} item>
-              <Typography gutterBottom variant="h4">
-              Trouvez l'architecte d'intérieur pour réaliser le projet de vos rêves.
+              <Typography gutterBottom component="h1" variant="h4">
+                Trouvez l'architecte d'intérieur pour réaliser le projet de vos rêves.
               </Typography>
-              <Box mb={3}>
+              <Box mb={3} color="text.secondary" >
                 <List>
                   <ListItem>
                     <ListItemText primary="1. Faites une demande en expliquant votre projet"></ListItemText>
@@ -77,20 +78,22 @@ const Introduction = () => {
 }
 
 const Partners = () => (
-  <Box component="section" bgcolor="secondary.main" py={10}>
+  <Box component="section" bgcolor="background.light" py={7}>
     <Container>
-      <Typography variant="h4" color="primary" gutterBottom>Les Réalisations de nos partenaires</Typography>
-      <TitlebarGridList></TitlebarGridList>
+      <Box mb={10}>
+        <Typography component="h2" variant="h4" align="center">Les Réalisations de nos partenaires</Typography>
+      </Box>
+      <ProjectGridList/>
     </Container>
   </Box>
 );
 
 const Index = () => (
   <>
-    <Header></Header>
-    <Introduction></Introduction>
-    <Partners></Partners>
-    <Footer></Footer>
+    <Header/>
+    <Introduction/>
+    <Partners/>
+    <Footer/>
   </>
 );
 
