@@ -19,7 +19,10 @@ import ProjectGridList from '../src/project-grid-list';
 const useStyles = makeStyles({
   w100: {
     width: '100%'
-  }
+  },
+  container: {
+    flexGrow: 1
+  },
 });
 
 const Introduction = () => {
@@ -39,35 +42,37 @@ const Introduction = () => {
     <>
       <Box component="section" bgcolor="background.light" py={7}>
         <Container>
-          <Grid container spacing={10}>
+          <Grid container>
             <Grid xs={12} md={6} item>
-              <Box p={4}>
+              <Box p={7}>
                 <img src="/undraw_interior_design_9i70.svg" alt="interior-designer" className={classes.w100}></img>
               </Box>
             </Grid>
             <Grid xs={12} md={6} item>
-              <Typography gutterBottom component="h1" variant="h4">
-                Trouvez l'architecte d'intérieur pour réaliser le projet de vos rêves.
-              </Typography>
-              <Box mb={3} color="text.secondary" >
-                <List>
-                  <ListItem>
-                    <ListItemText primary="1. Faites une demande en expliquant votre projet"></ListItemText>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="2. Echangez avec notre sélection d'architectes d'intérieur"></ListItemText>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="3. Prenez connaissance des devis et faites votre choix"></ListItemText>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="4. Réalisez votre projet et profitez de votre nouvel intérieur !"></ListItemText>
-                  </ListItem>
-                </List>
+              <Box p={7}>
+                <Typography gutterBottom component="h1" variant="h4">
+                  Trouvez l'architecte d'intérieur pour réaliser le projet de vos rêves.
+                </Typography>
+                <Box mb={3} color="text.secondary" >
+                  <List>
+                    <ListItem>
+                      <ListItemText primary="1. Faites une demande en expliquant votre projet"></ListItemText>
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="2. Echangez avec notre sélection d'architectes d'intérieur"></ListItemText>
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="3. Prenez connaissance des devis et faites votre choix"></ListItemText>
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="4. Réalisez votre projet et profitez de votre nouvel intérieur !"></ListItemText>
+                    </ListItem>
+                  </List>
+                </Box>
+                <Button variant="contained" color="secondary" onClick={openQuoteRequest}>
+                  Faire une demande
+                </Button>
               </Box>
-              <Button variant="contained" color="secondary" onClick={openQuoteRequest}>
-                Faire une demande
-              </Button>
             </Grid>
           </Grid>
         </Container>
