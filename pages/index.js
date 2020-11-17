@@ -42,7 +42,7 @@ const Introduction = () => {
 
   return (
     <>
-      <Box component="section" bgcolor="background.light" py={7}>
+      <Box component="section" bgcolor="secondary.main" py={7}>
         <Container>
           <Grid container>
             <Grid xs={12} md={6} item>
@@ -71,7 +71,7 @@ const Introduction = () => {
                     </ListItem>
                   </List>
                 </Box>
-                <Button variant="contained" color="secondary" onClick={openQuoteRequest}>
+                <Button variant="contained" color="primary" onClick={openQuoteRequest}>
                   Faire une demande
                 </Button>
               </Box>
@@ -85,7 +85,7 @@ const Introduction = () => {
 }
 
 const Projects = ({projects}) => (
-  <Box component="section" bgcolor="background.light" py={7}>
+  <Box component="section" bgcolor="secondary.main" py={7}>
     <Container>
       <Box mb={10}>
         <Typography component="h2" variant="h4" align="center">Les Réalisations de nos partenaires</Typography>
@@ -105,7 +105,7 @@ const Index = (props) => (
 );
 
 export async function getServerSideProps() {
-  const projects = await archisetSanityClient.fetch('*[defined(description) && defined(images)]{description, images}[0...10]');
+  const projects = await archisetSanityClient.fetch('*[defined(featured_image)]{title, featured_image, images}[0...10]');
   return { props: { projects: projects }};
 };
 

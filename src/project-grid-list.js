@@ -1,14 +1,24 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
 
-import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
+import Image from 'next/image';
+import theme from '../src/theme';
+
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import Modal from '@material-ui/core/Modal';
+import MobileStepper from '@material-ui/core/MobileStepper';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+
+import ButtonBase from '@material-ui/core/ButtonBase';
+import IconButton from '@material-ui/core/IconButton';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 
 import archisetSanityClient from './sanity-client'
 import imageUrlBuilder from '@sanity/image-url'
@@ -24,66 +34,98 @@ function urlFor(source) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  projectItemButton: {
+    overflow: 'hidden'
+  },
+  featuredImage: {
+    width: '100%',
+    height: 320,
+    'object-fit': 'cover',
+    transition: '0.8s',
+    '&:hover': {
+      transform: 'scale(1.05)'
+   },
+  },
+  carouselImage: {
+    maxWidth: '100%',
+    'object-fit': 'scale-down'
+  },
+  largeIcon: {
+    width: 60,
+    height: 60
+  },
+  modal: {
     display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#fff',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
-  icon: {
-    color: 'rgba(255, 255, 255, 0.54)',
-  },
+  modalContent: {
+    outline: 0,
+  }
 }));
 
-const tileData = [{
-    img: 'project_1.jpg',
-    title: "Rénovation d'une cuisine"
-}, {
-    img: 'project_2.jpg',
-    title: "Rénovation résidentielle complète"
-}, {
-    img: 'project_3.jpg',
-    title: "Transformation d'un triplex"
-}];
-
 const ProjectGridList = (props) => {
-
-  console.log(props);
-
   const classes = useStyles();
 
-  const getCols = () => {
-    if (isWidthUp('xl', props.width)) {
-      return 4;
-    } else if (isWidthUp('md', props.width)) {
-      return 3;
-    } else if (isWidthUp('sm', props.width)) {
-      return 2;
-    } else {
-      return 1;
-    }
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [activeProject, setActiveProject] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(0);
+
+  const openModal = (i) => {
+    setActiveProject(i);
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setActiveStep(0);
+  };
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   return (
-    <div className={classes.root}>
-      <GridList cellHeight={300} cols={getCols()} spacing={24}>
-          {props.projects.map((project, index) => (
-              <GridListTile key={index}>
-                <img src={urlFor(project.images[0])} alt={project.description}/>
-                <GridListTileBar
-                  title={project.description}
-                  /*subtitle={<span>Budget: CHF {tile.budget.toLocaleString()}</span>}
-                  actionIcon={
-                    <IconButton aria-label={`Information sur ${project.description}`} className={classes.icon}>
-                      <InfoIcon />
-                    </IconButton>
-                  }*/
-                />
-              </GridListTile>
-          ))}
-      </GridList>
-    </div>
+    <>
+      <Grid container spacing={4}>
+        {props.projects.map((project, index) => (
+          <Grid key={index} item xs={12} sm={6} md={6} lg={4}>
+            <ButtonBase onClick={() => openModal(index)} className={classes.projectItemButton}>
+              <img
+                src={urlFor(project.featured_image)}
+                className={classes.featuredImage}
+                draggable="false"
+              />
+              <Box color="white" width="100%" position="absolute" bottom={0} bgcolor="rgba(0, 0, 0, 0.5)" textAlign="left" p={1}>
+                <Typography variant="body1">
+                  {project.title}
+                </Typography>
+              </Box>
+            </ButtonBase>
+          </Grid>
+        ))}
+      </Grid>
+      <Modal disablePortal open={modalOpen} className={classes.modal} onClose={handleModalClose}>
+        <Box display="flex" alignItems="center" className={classes.modalContent}>
+          <IconButton className={classes.largeIcon} onClick={handleBack} disabled={activeStep === 0} color="inherit">
+            <KeyboardArrowLeft/>
+          </IconButton>
+          <Box display="flex" justifyContent="center" width={700} maxHeight="90vh">
+            <img src={urlFor(props.projects[activeProject].images[activeStep])} className={classes.carouselImage}/>
+          </Box>
+          <IconButton className={classes.largeIcon} onClick={handleNext} disabled={activeStep === props.projects[activeProject].images.length - 1} color="inherit">
+            <KeyboardArrowRight/>
+          </IconButton>
+        </Box>
+      </Modal>
+    </>
   );
 };
 
-export default withWidth()(ProjectGridList);
+export default ProjectGridList;

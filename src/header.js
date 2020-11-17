@@ -4,7 +4,7 @@ import Link from '@material-ui/core/Link';
 import { Typography } from '@material-ui/core';
 
 const Header = () => (
-  <Box component="header" pt={7} bgcolor="background.light">
+  <Box component="header" pt={7} bgcolor="secondary.main">
     <Box display="flex" justifyContent="center" mb={2} alignItems="center">
       <Link href="#">
         <img src="/archiset-logo.svg" alt="logo" height="70"></img>

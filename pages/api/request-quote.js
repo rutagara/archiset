@@ -9,7 +9,7 @@ export default async (req, res) => {
     const content = {
         to: 'contact@archiset.ch',
         from: 'noreply@archiset.ch',
-        subject: 'Nouvelle demande de devis',
+        subject: `Nouvelle demande de devis: ${values.firstName} ${values.lastName}`,
         text: `
             ${values.firstName} ${values.lastName} a fait une demande
             Email de contact:${values.email}
