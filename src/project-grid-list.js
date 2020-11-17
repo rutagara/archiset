@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Image from 'next/image';
@@ -66,12 +66,57 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const useKeyPress = function(targetKey) {
+  const [keyPressed, setKeyPressed] = React.useState(false);
+
+  function downHandler({ key }) {
+    if (key === targetKey) {
+      setKeyPressed(true);
+    }
+  }
+
+  const upHandler = ({ key }) => {
+    if (key === targetKey) {
+      setKeyPressed(false);
+    }
+  };
+
+  React.useEffect(() => {
+    window.addEventListener("keydown", downHandler);
+    window.addEventListener("keyup", upHandler);
+
+    return () => {
+      window.removeEventListener("keydown", downHandler);
+      window.removeEventListener("keyup", upHandler);
+    };
+  });
+
+  return keyPressed;
+};
+
 const ProjectGridList = (props) => {
   const classes = useStyles();
 
   const [modalOpen, setModalOpen] = React.useState(false);
   const [activeProject, setActiveProject] = React.useState(0);
   const [activeStep, setActiveStep] = React.useState(0);
+  const leftPress = useKeyPress("ArrowLeft");
+  const rightPress = useKeyPress("ArrowRight");
+
+  const activeProjectSize = () => (props.projects[activeProject].images.length);
+
+  useEffect(() => {
+    console.log('AH OUI');
+    if (modalOpen && leftPress) {
+      setActiveStep((prevActiveStep) => Math.max(0, prevActiveStep - 1));
+    }
+  }, [leftPress]);
+
+  useEffect(() => {
+    if (modalOpen && rightPress) {
+      setActiveStep((prevActiveStep) => Math.min(prevActiveStep + 1, activeProjectSize() - 1));
+    }
+  }, [rightPress]);
 
   const openModal = (i) => {
     setActiveProject(i);
@@ -119,7 +164,7 @@ const ProjectGridList = (props) => {
           <Box display="flex" justifyContent="center" width={700} maxHeight="90vh">
             <img src={urlFor(props.projects[activeProject].images[activeStep])} className={classes.carouselImage}/>
           </Box>
-          <IconButton className={classes.largeIcon} onClick={handleNext} disabled={activeStep === props.projects[activeProject].images.length - 1} color="inherit">
+          <IconButton className={classes.largeIcon} onClick={handleNext} disabled={activeStep === activeProjectSize() - 1} color="inherit">
             <KeyboardArrowRight/>
           </IconButton>
         </Box>
