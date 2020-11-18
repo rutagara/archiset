@@ -57,16 +57,16 @@ const Introduction = () => {
                 </Typography>
                 <Box mb={3} color="text.secondary" >
                   <List>
-                    <ListItem>
+                    <ListItem disableGutters>
                       <ListItemText primary="1. Faites une demande en expliquant votre projet"></ListItemText>
                     </ListItem>
-                    <ListItem>
+                    <ListItem disableGutters>
                       <ListItemText primary="2. Echangez avec notre sélection d'architectes d'intérieur"></ListItemText>
                     </ListItem>
-                    <ListItem>
+                    <ListItem disableGutters>
                       <ListItemText primary="3. Prenez connaissance des devis et faites votre choix"></ListItemText>
                     </ListItem>
-                    <ListItem>
+                    <ListItem disableGutters>
                       <ListItemText primary="4. Réalisez votre projet et profitez de votre nouvel intérieur !"></ListItemText>
                     </ListItem>
                   </List>

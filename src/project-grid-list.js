@@ -10,7 +10,7 @@ import Modal from '@material-ui/core/Modal';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import CloseIcon from '@material-ui/icons/Close';
 
 import ButtonBase from '@material-ui/core/ButtonBase';
 import IconButton from '@material-ui/core/IconButton';
@@ -20,8 +20,12 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
-import archisetSanityClient from './sanity-client'
-import imageUrlBuilder from '@sanity/image-url'
+import archisetSanityClient from './sanity-client';
+import imageUrlBuilder from '@sanity/image-url';
+
+import { useSwipeable } from "react-swipeable";
+import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 
 // Get a pre-configured url-builder from your sanity client
 const builder = imageUrlBuilder(archisetSanityClient)
@@ -44,15 +48,12 @@ const useStyles = makeStyles((theme) => ({
     transition: '0.8s',
     '&:hover': {
       transform: 'scale(1.05)'
-   },
-  },
+    }
+  }, 
   carouselImage: {
     maxWidth: '100%',
+    maxHeight: '90vh',
     'object-fit': 'scale-down'
-  },
-  largeIcon: {
-    width: 60,
-    height: 60
   },
   modal: {
     display: 'flex',
@@ -63,7 +64,14 @@ const useStyles = makeStyles((theme) => ({
   },
   modalContent: {
     outline: 0,
-  }
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    margin: 7
+  },
+
 }));
 
 const useKeyPress = function(targetKey) {
@@ -99,24 +107,47 @@ const ProjectGridList = (props) => {
 
   const [modalOpen, setModalOpen] = React.useState(false);
   const [activeProject, setActiveProject] = React.useState(0);
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [step, setStep] = React.useState({
+    oldStep: 0,
+    currentStep: 0
+  });
   const leftPress = useKeyPress("ArrowLeft");
   const rightPress = useKeyPress("ArrowRight");
 
   const activeProjectSize = () => (props.projects[activeProject].images.length);
 
+  const goToPreviousStep = () => {
+    setStep((s) => ({
+      oldStep: s.currentStep,
+      currentStep: Math.max(0, s.currentStep - 1)
+    }));
+  };
+
+  const goToNextStep = () => {
+    setStep((s) => ({
+      oldStep: s.currentStep,
+      currentStep: Math.min(s.currentStep + 1, activeProjectSize() - 1)
+    }));
+  };
+
   useEffect(() => {
-    console.log('AH OUI');
     if (modalOpen && leftPress) {
-      setActiveStep((prevActiveStep) => Math.max(0, prevActiveStep - 1));
+      goToPreviousStep();
     }
   }, [leftPress]);
 
   useEffect(() => {
     if (modalOpen && rightPress) {
-      setActiveStep((prevActiveStep) => Math.min(prevActiveStep + 1, activeProjectSize() - 1));
+      goToNextStep();
     }
   }, [rightPress]);
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => goToNextStep(),
+    onSwipedRight: () => goToPreviousStep(),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true
+  });
 
   const openModal = (i) => {
     setActiveProject(i);
@@ -125,17 +156,41 @@ const ProjectGridList = (props) => {
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setActiveStep(0);
-  };
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setStep({
+      oldStep: 0,
+      currentStep: 0
+    });
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    goToPreviousStep();
   };
 
+  const handleNext = () => {
+    goToNextStep();
+  };
+
+  const [imageEntered, setImageEntered] = React.useState(false);
+
+  const handleImageEnter = () => {
+    setImageEntered(false);
+  };
+
+  const handleImageEntered = () => {
+    setImageEntered(true);
+  }
+
+  const direction = () => {
+    let right = null;
+    if (step.oldStep < step.currentStep) {
+      right = true
+    } else {
+      right = false;
+    }
+
+    return (step.oldStep < step.currentStep) ? "right" : "left";
+  };
+ 
   return (
     <>
       <Grid container spacing={4}>
@@ -157,16 +212,36 @@ const ProjectGridList = (props) => {
         ))}
       </Grid>
       <Modal disablePortal open={modalOpen} className={classes.modal} onClose={handleModalClose}>
-        <Box display="flex" alignItems="center" className={classes.modalContent}>
-          <IconButton className={classes.largeIcon} onClick={handleBack} disabled={activeStep === 0} color="inherit">
-            <KeyboardArrowLeft/>
+        <Box className={classes.modalContent}>
+          <IconButton onClick={handleModalClose} color="inherit" className={classes.closeButton}>
+            <CloseIcon/>
           </IconButton>
-          <Box display="flex" justifyContent="center" width={700} maxHeight="90vh">
-            <img src={urlFor(props.projects[activeProject].images[activeStep])} className={classes.carouselImage}/>
+          <Box display="flex" alignItems="center" maxWidth={1}>
+            <IconButton onClick={handleBack} disabled={step.currentStep === 0} color="inherit">
+              <KeyboardArrowLeft/>
+            </IconButton>
+            <Box flexGrow={1} {...swipeHandlers}>
+              {props.projects[activeProject].images.map((image, index) => (
+                <Slide 
+                  key={'image_' + index}
+                  className={classes.slide}
+                  direction={(step.oldStep < step.currentStep) ? "left" : "right"}
+                  in={(index === step.currentStep)} 
+                  onEnter={handleImageEnter}
+                  onEntered={handleImageEntered}
+                  mountOnEnter 
+                  unmountOnExit
+                  exit={false}>
+                    <div>
+                      <img src={urlFor(image)} className={classes.carouselImage} draggable="false"/>
+                    </div>   
+                </Slide>
+              ))}
+            </Box>
+            <IconButton onClick={handleNext} disabled={step.currentStep === activeProjectSize() - 1} color="inherit">
+              <KeyboardArrowRight/>
+            </IconButton>
           </Box>
-          <IconButton className={classes.largeIcon} onClick={handleNext} disabled={activeStep === activeProjectSize() - 1} color="inherit">
-            <KeyboardArrowRight/>
-          </IconButton>
         </Box>
       </Modal>
     </>
