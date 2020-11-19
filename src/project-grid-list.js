@@ -65,6 +65,11 @@ const useStyles = makeStyles((theme) => ({
   modalContent: {
     outline: 0,
   },
+  arrowButton: {
+    '&:disabled': {
+      color: theme.palette.grey[800]
+    }
+  },
   closeButton: {
     position: 'absolute',
     top: 0,
@@ -118,17 +123,19 @@ const ProjectGridList = (props) => {
 
   const changeStep = (direction) => {
     const increment = direction === 'left' ? -1 : 1;
-    const newStep = (step + increment) % activeProjectSize();
-
+    const newStep = Math.max(Math.min(step + increment, activeProjectSize() - 1), 0);
     const oppDirection = direction === 'left' ? 'right' : 'left';
-    setSlideDirection(direction);
-    setSlideIn(false);
 
-    setTimeout(() => {
-      setStep(newStep);
-      setSlideDirection(oppDirection);
-      setSlideIn(true);
-    }, 300);
+    if (newStep != step) {
+      setSlideDirection(direction);
+      setSlideIn(false);
+
+      setTimeout(() => {
+        setStep(newStep);
+        setSlideDirection(oppDirection);
+        setSlideIn(true);
+      }, 300);
+    }
   };
 
   const handleBack = () => {
@@ -200,7 +207,7 @@ const ProjectGridList = (props) => {
             <CloseIcon/>
           </IconButton>
           <Box display="flex" alignItems="center" maxWidth={1}>
-            <IconButton onClick={handleBack} disabled={!slideIn} color="inherit">
+            <IconButton onClick={handleBack} className={classes.arrowButton} disabled={!slideIn || (step == 0)} color="inherit">
               <KeyboardArrowLeft/>
             </IconButton>
             <Box flexGrow={1} {...swipeHandlers}>
@@ -214,7 +221,7 @@ const ProjectGridList = (props) => {
                   </div>   
               </Slide>
             </Box>
-            <IconButton onClick={handleNext} disabled={!slideIn} color="inherit">
+            <IconButton onClick={handleNext} className={classes.arrowButton} disabled={!slideIn || (step == activeProjectSize() - 1)} color="inherit">
               <KeyboardArrowRight/>
             </IconButton>
           </Box>
