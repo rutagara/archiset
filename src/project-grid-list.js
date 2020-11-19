@@ -130,11 +130,11 @@ const ProjectGridList = (props) => {
       setSlideDirection(direction);
       setSlideIn(false);
 
-      setTimeout(() => {
+      setTimeout(() => {  
         setStep(newStep);
         setSlideDirection(oppDirection);
         setSlideIn(true);
-      }, 300);
+      }, 500);
     }
   };
 
@@ -215,9 +215,11 @@ const ProjectGridList = (props) => {
                 className={classes.slide}
                 direction={slideDirection}
                 in={slideIn}
-                timeout={150}>
+                timeout={400}>
                   <div>
-                    <img src={urlFor(props.projects[activeProject].images[step])} className={classes.carouselImage} draggable="false"/>
+                    <Fade in={slideIn} timeout={250}>
+                      <img src={urlFor(props.projects[activeProject].images[step])} className={classes.carouselImage} draggable="false"/>
+                    </Fade>
                   </div>   
               </Slide>
             </Box>
