@@ -145,6 +145,8 @@ const ProjectGridList = (props) => {
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => goToNextStep(),
     onSwipedRight: () => goToPreviousStep(),
+    onSwipedDown: () => handleModalClose(),
+    onSwipedUp: () => handleModalClose(),
     preventDefaultTouchmoveEvent: true,
     trackMouse: true
   });
@@ -170,27 +172,6 @@ const ProjectGridList = (props) => {
     goToNextStep();
   };
 
-  const [imageEntered, setImageEntered] = React.useState(false);
-
-  const handleImageEnter = () => {
-    setImageEntered(false);
-  };
-
-  const handleImageEntered = () => {
-    setImageEntered(true);
-  }
-
-  const direction = () => {
-    let right = null;
-    if (step.oldStep < step.currentStep) {
-      right = true
-    } else {
-      right = false;
-    }
-
-    return (step.oldStep < step.currentStep) ? "right" : "left";
-  };
- 
   return (
     <>
       <Grid container spacing={4}>
@@ -227,8 +208,6 @@ const ProjectGridList = (props) => {
                   className={classes.slide}
                   direction={(step.oldStep < step.currentStep) ? "left" : "right"}
                   in={(index === step.currentStep)} 
-                  onEnter={handleImageEnter}
-                  onEntered={handleImageEntered}
                   mountOnEnter 
                   unmountOnExit
                   exit={false}>

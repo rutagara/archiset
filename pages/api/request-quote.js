@@ -2,7 +2,7 @@
 const sgMail = require('@sendgrid/mail')
 
 export default async (req, res) => {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
     const values = req.body;
 
@@ -17,7 +17,7 @@ export default async (req, res) => {
             Description du projet: ${values.projectDescription}
         `,
         html: `
-            <h3>${values.firstName} ${values.lastName} a fait une demande</h3>
+            <h3>${values.firstName} ${values.lastName} a fait une demande de devis.</h3>
             <div><strong>Email de contact:</strong> ${values.email}</div>
             <div><strong>Téléphone de contact:</strong> ${values.phone === null ? 'non renseigné' : values.phone}</div>
             <div><strong>Budget:</strong> ${values.budget === null ? 'non renseigné' : 'CHF ' + values.budget}</div>

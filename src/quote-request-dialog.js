@@ -116,10 +116,10 @@ function QuoteRequestDialog(props) {
 
   return (
     <>
-      <Snackbar open={snackbarState === 'success'} autoHidDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar open={snackbarState === 'success'} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success">Votre demande a été envoyée, nos architectes d'intérieur prendront contact avec vous dans les plus brefs délais.</Alert>
       </Snackbar>
-      <Snackbar open={snackbarState === 'error'} autoHidDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar open={snackbarState === 'error'} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="error">Votre message n'a pas pu être envoyé. Veuillez réessayer.</Alert>
       </Snackbar>
       <Dialog onClose={onClose} open={open} aria-labelledby="quote-request-dialog-title">
