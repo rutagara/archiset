@@ -107,44 +107,57 @@ const ProjectGridList = (props) => {
 
   const [modalOpen, setModalOpen] = React.useState(false);
   const [activeProject, setActiveProject] = React.useState(0);
-  const [step, setStep] = React.useState({
-    oldStep: 0,
-    currentStep: 0
-  });
+  const [step, setStep] = React.useState(0);
+  const [slideIn, setSlideIn] = React.useState(true);
+  const [slideDirection, setSlideDirection] = React.useState('left');
   const leftPress = useKeyPress("ArrowLeft");
   const rightPress = useKeyPress("ArrowRight");
 
   const activeProjectSize = () => (props.projects[activeProject].images.length);
 
-  const goToPreviousStep = () => {
-    setStep((s) => ({
-      oldStep: s.currentStep,
-      currentStep: Math.max(0, s.currentStep - 1)
-    }));
+
+  const changeStep = (direction) => {
+    const increment = direction === 'left' ? -1 : 1;
+    const newStep = (step + increment) % activeProjectSize();
+
+    const oppDirection = direction === 'left' ? 'right' : 'left';
+    setSlideDirection(direction);
+    setSlideIn(false);
+
+    setTimeout(() => {
+      setStep(newStep);
+      setSlideDirection(oppDirection);
+      setSlideIn(true);
+    }, 300);
   };
 
-  const goToNextStep = () => {
-    setStep((s) => ({
-      oldStep: s.currentStep,
-      currentStep: Math.min(s.currentStep + 1, activeProjectSize() - 1)
-    }));
+  const handleBack = () => {
+    if (slideIn) {
+      changeStep('left');
+    };
+  };
+
+  const handleNext = () => {
+    if (slideIn) {
+      changeStep('right');
+    };
   };
 
   useEffect(() => {
     if (modalOpen && leftPress) {
-      goToPreviousStep();
+      handleBack();
     }
   }, [leftPress]);
 
   useEffect(() => {
     if (modalOpen && rightPress) {
-      goToNextStep();
+      handleNext();
     }
   }, [rightPress]);
 
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => goToNextStep(),
-    onSwipedRight: () => goToPreviousStep(),
+    onSwipedLeft: () => handleNext(),
+    onSwipedRight: () => handleBack(),
     onSwipedDown: () => handleModalClose(),
     onSwipedUp: () => handleModalClose(),
     preventDefaultTouchmoveEvent: true,
@@ -158,18 +171,7 @@ const ProjectGridList = (props) => {
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setStep({
-      oldStep: 0,
-      currentStep: 0
-    });
-  };
-
-  const handleBack = () => {
-    goToPreviousStep();
-  };
-
-  const handleNext = () => {
-    goToNextStep();
+    setStep(0);
   };
 
   return (
@@ -198,26 +200,21 @@ const ProjectGridList = (props) => {
             <CloseIcon/>
           </IconButton>
           <Box display="flex" alignItems="center" maxWidth={1}>
-            <IconButton onClick={handleBack} disabled={step.currentStep === 0} color="inherit">
+            <IconButton onClick={handleBack} disabled={!slideIn} color="inherit">
               <KeyboardArrowLeft/>
             </IconButton>
             <Box flexGrow={1} {...swipeHandlers}>
-              {props.projects[activeProject].images.map((image, index) => (
-                <Slide 
-                  key={'image_' + index}
-                  className={classes.slide}
-                  direction={(step.oldStep < step.currentStep) ? "left" : "right"}
-                  in={(index === step.currentStep)} 
-                  mountOnEnter 
-                  unmountOnExit
-                  exit={false}>
-                    <div>
-                      <img src={urlFor(image)} className={classes.carouselImage} draggable="false"/>
-                    </div>   
-                </Slide>
-              ))}
+              <Slide 
+                className={classes.slide}
+                direction={slideDirection}
+                in={slideIn}
+                timeout={150}>
+                  <div>
+                    <img src={urlFor(props.projects[activeProject].images[step])} className={classes.carouselImage} draggable="false"/>
+                  </div>   
+              </Slide>
             </Box>
-            <IconButton onClick={handleNext} disabled={step.currentStep === activeProjectSize() - 1} color="inherit">
+            <IconButton onClick={handleNext} disabled={!slideIn} color="inherit">
               <KeyboardArrowRight/>
             </IconButton>
           </Box>
