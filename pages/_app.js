@@ -16,19 +16,23 @@ export default function MyApp(props) {
     }
   }, []);
 
+  const router = React.useRouter();
+
+  React.useEffect(() => {
+    const handleRouteChange = (url) => {
+      gtag.pageview(url);
+    };
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <React.Fragment>
       <Head>
         <title>Archiset</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-182950114-1"/>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'UA-182950114-1');
-        </script>
       </Head>
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
