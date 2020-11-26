@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import Image from 'next/image';
 import theme from '../src/theme';
 
 import Grid from '@material-ui/core/Grid';
@@ -109,6 +108,15 @@ const useKeyPress = function(targetKey) {
 
 const ProjectGridList = (props) => {
   const classes = useStyles();
+
+  useEffect(() => {
+    props.projects.forEach((project) => {
+      project.images.forEach((image) => {
+        const img = new Image();
+        img.src = image.fileName;
+      });
+    });
+  });
 
   const [modalOpen, setModalOpen] = React.useState(false);
   const [activeProject, setActiveProject] = React.useState(0);
