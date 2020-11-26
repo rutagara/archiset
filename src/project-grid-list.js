@@ -111,9 +111,9 @@ const ProjectGridList = (props) => {
 
   useEffect(() => {
     props.projects.forEach((project) => {
-      project.images.forEach((image) => {
+      project.images.forEach((image, index) => {
         const img = new Image();
-        img.src = image.fileName;
+        img.src = urlFor(image).auto('format');
       });
     });
   });
@@ -125,6 +125,8 @@ const ProjectGridList = (props) => {
   const [slideDirection, setSlideDirection] = React.useState('left');
   const leftPress = useKeyPress("ArrowLeft");
   const rightPress = useKeyPress("ArrowRight");
+
+  const transitionTime = 500;
 
   const activeProjectSize = () => (props.projects[activeProject].images.length);
 
@@ -139,10 +141,10 @@ const ProjectGridList = (props) => {
       setSlideIn(false);
 
       setTimeout(() => {  
-        setStep(newStep);
         setSlideDirection(oppDirection);
+        setStep(newStep); 
         setSlideIn(true);
-      }, 500);
+      }, transitionTime + 100);
     }
   };
 
@@ -188,7 +190,6 @@ const ProjectGridList = (props) => {
     setModalOpen(false);
     setStep(0);
   };
-
   return (
     <>
       <Grid container spacing={4}>
@@ -223,10 +224,14 @@ const ProjectGridList = (props) => {
                 className={classes.slide}
                 direction={slideDirection}
                 in={slideIn}
-                timeout={400}>
+                timeout={transitionTime}>
                   <div>
-                    <Fade in={slideIn} timeout={250}>
-                      <img src={urlFor(props.projects[activeProject].images[step])} className={classes.carouselImage} draggable="false"/>
+                    <Fade in={slideIn} timeout={transitionTime / 2}>
+                      <img 
+                        src={urlFor(props.projects[activeProject].images[step]).auto('format')} 
+                        className={classes.carouselImage} 
+                        draggable="false"
+                      />
                     </Fade>
                   </div>   
               </Slide>
