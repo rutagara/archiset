@@ -105,7 +105,7 @@ const Index = (props) => (
 );
 
 export async function getServerSideProps() {
-  const projects = await archisetSanityClient.fetch('*[defined(featured_image)]{title, featured_image, images}[0...10]');
+  const projects = await archisetSanityClient.fetch('*[defined(featured_image) && show_on_website]{title, featured_image, images}[0...10]');
   return { props: { projects: projects }};
 };
 
